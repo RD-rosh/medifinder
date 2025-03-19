@@ -17,8 +17,20 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 
+def home(request):
+    return HttpResponse("Welcome to MediFinder!")
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("pharmacy/", include("pharmacy.urls")),  # Ensure 'pharmacy.urls' exists
+    path("", home),  # Add a root route
+]
+
+""" 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("pharmacy/", include("pharmacy.urls")),
 ]
+ """
