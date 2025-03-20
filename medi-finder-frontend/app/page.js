@@ -1,11 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter(); 
+
+  const navigateToDashboard = () => {
+    router.push("/dashboard"); 
+    };
 
   useEffect(() => {
     if (query.length < 3) {
@@ -36,6 +42,14 @@ export default function Home() {
 
   return (
     <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Welcome to Medi Finder</h1>
+      <button
+        onClick={navigateToDashboard} // Trigger the navigation when the button is clicked
+        className="bg-blue-600 text-white py-2 px-4 rounded"
+      >
+        Go to Dashboard
+      </button>
+    
       <h1 className="text-2xl font-bold mb-4">Search for Medicines</h1>
       <input
         type="text"
