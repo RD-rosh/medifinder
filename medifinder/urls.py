@@ -18,15 +18,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from pharmacy.views import login_view, logout_view, csv_upload, search_medicine
 
 def home(request):
     return HttpResponse("Welcome to MediFinder!")
 
+""" urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("login/", login_view),
+    path("logout/", logout_view),
+    path("upload_csv/", csv_upload),
+    path("search/", search_medicine),
+    path("", home),
+    ] """
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("pharmacy/", include("pharmacy.urls")),  # Ensure 'pharmacy.urls' exists
+    path("api/", include("pharmacy.urls")),  # Ensure 'pharmacy.urls' exists
     path("", home),  # Add a root route
-]
+] 
 
 """ 
 urlpatterns = [

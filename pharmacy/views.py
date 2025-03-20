@@ -46,19 +46,25 @@ def csv_upload(request):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def search_medicine(request):
-    query = request.GET.get("q", "")
-    medicines = Medicine.objects.filter(Q(name__icontains=query) | Q(active_ingredient__icontains=query))
+    query = request.GET.get("search", "").strip()
+
+    # Filter by name, brand, or active ingredient
+    medicines = Medicine.objects.filter(
+        Q(name__icontains=query) |
+        Q(brand__icontains=query) |  
+        Q(active_ingredient__icontains=query)
+        )
 
     results = []
     for med in medicines:
         results.append({
-            "name" : med.name,
-            "brand" : med.brand,    
-            "pharmacy" : med.pharmacy.name,
-            "address" : med.pharmacy.address,
-            "phone" : med.pharmacy.phone,
-            "quantity" : med.quantity,
-            "online_delivery" : med.pharmacy.online_delivery,
+            "name": med.name,
+            "brand": med.brand,    
+            "pharmacy": med.pharmacy.name,
+            "address": med.pharmacy.address,
+            "phone": med.pharmacy.phone,
+            "quantity": med.quantity,
+            "online_delivery": med.pharmacy.online_delivery,
             "whatsapp_link": f"https://wa.me/{med.pharmacy.phone}"
-            })
+        })
     return JsonResponse({"results": results})
