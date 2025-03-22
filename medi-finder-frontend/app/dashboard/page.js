@@ -2,10 +2,11 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 
 const Dashboard = () => {
   const router = useRouter();
+  const token = localStorage.getItem("token");
   const { data: session, status } = useSession();
 
   const [pharmacies, setPharmacies] = useState([]);
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("token" , token);
     if (status === "unauthenticated") {
       router.push("/login");
     }
@@ -26,10 +28,10 @@ const Dashboard = () => {
     const fetchPharmacies = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/user/pharmacies`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/user/pharmacies/`,
           {
             headers: {
-              Authorization: `Bearer ${session?.accessToken}`,
+              Authorization: `Token ${session?.accessToken}`,
             },
             withCredentials: true, 
           }
@@ -51,7 +53,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/medicines/${pharmacyId}/`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/medicines/${pharmacyId}/`
       );
       setMedicines(response.data);
     } catch (error) {
@@ -63,10 +65,12 @@ const Dashboard = () => {
   if (status === "unauthenticated") return null;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Pharmacy Dashboard</h1>
+    <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+      <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-6">
+        Pharmacy <span className="text-blue-600">Dashboard</span>
+      </h1>
 
-      <h2>Select a Pharmacy</h2>
+      <h2 className="text-lg font-semibold text-gray-700 mb-2">Select a Pharmacy</h2>
       <select
         value={selectedPharmacy}
         onChange={(e) => {
@@ -74,6 +78,7 @@ const Dashboard = () => {
           setSelectedPharmacy(pharmacyId);
           fetchMedicines(pharmacyId);
         }}
+        className="w-full p-3 border rounded-lg shadow-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
       >
         <option value="">Select a Pharmacy</option>
         {pharmacies.map((pharmacy) => (
@@ -84,20 +89,26 @@ const Dashboard = () => {
       </select>
 
       {selectedPharmacy && (
-        <>
-          <h2>Medicine List</h2>
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-3">Medicine List</h2>
           {medicines.length > 0 ? (
-            <ul>
+            <ul className="space-y-3">
               {medicines.map((med) => (
-                <li key={med.id}>
-                  {med.name} - {med.brand} (Qty: {med.quantity})
+                <li
+                  key={med.id}
+                  className="p-4 border rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition"
+                >
+                  <p className="text-lg font-semibold text-gray-800">
+                    {med.name} <span className="text-gray-600">({med.brand})</span>
+                  </p>
+                  <p className="text-gray-700">Quantity: <span className="font-medium">{med.quantity}</span></p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No medicines found.</p>
+            <p className="text-gray-600 mt-4">No medicines found.</p>
           )}
-        </>
+        </div>
       )}
     </div>
   );

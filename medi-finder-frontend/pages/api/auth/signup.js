@@ -5,7 +5,7 @@ const handleSignup = async (e) => {
       username: e.target.username.value,
       password: e.target.password.value,
       email: e.target.email.value,
-      pharmacy_name: e.target.pharmacy_name.value, // Create pharmacy if provided
+      pharmacy_name: e.target.pharmacy_name.value, 
       address: e.target.address.value,
       phone: e.target.phone.value,
       online_delivery: e.target.online_delivery.checked,

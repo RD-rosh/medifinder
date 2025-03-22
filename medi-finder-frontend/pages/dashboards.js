@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login"); // Redirect to login if not authenticated
+      router.push("/login");
     }
   }, [status, router]);
 
@@ -25,7 +25,7 @@ export default function Dashboard() {
 
   if (status === "loading") return <p>Loading...</p>;
 
-  if (!session) return null; // Prevent rendering if not authenticated
+  if (!session) return null; 
 
   return (
     <div className="p-6">

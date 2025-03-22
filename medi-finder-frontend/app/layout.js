@@ -14,7 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Remove the metadata export or move it to a separate file
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

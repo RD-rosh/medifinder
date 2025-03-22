@@ -67,7 +67,6 @@ def get_pharmacy_medicines(request, pharmacy_id):
 def search_medicine(request):
     query = request.GET.get("search", "").strip()
 
-    # Filter by name, brand, or active ingredient
     medicines = Medicine.objects.filter(
         Q(name__icontains=query) |
         Q(brand__icontains=query) |  
@@ -97,10 +96,8 @@ def signup_view(request):
             password = data["password"]
             email = data.get("email", "")
 
-            # Create user
             user = User.objects.create_user(username=username, email=email, password=password)
 
-            # If a pharmacy name is provided, create the pharmacy
             if "pharmacy_name" in data:
                 Pharmacy.objects.create(
                     user=user,
@@ -124,7 +121,7 @@ def signup_view(request):
 def get_user_pharmacies(request):
     if request.method == "GET":
         user = request.user
-        print(f"✅ Debug: Authenticated user - {user}")  # 🔹 Backend Debug
+        print(f"Debug: Authenticated user - {user}") 
         if not user.is_authenticated:
             return JsonResponse({"error": "User not authenticated"}, status=401)
 

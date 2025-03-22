@@ -27,7 +27,7 @@ export default function Home() {
         );
         console.log("API Response:", res.data);
         setMedicines(Array.isArray(res.data.results) ? res.data.results : []);
-        //setMedicines(Array.isArray(res.data) ? res.data : []);
+        
       } catch (error) {
         console.error("Error fetching medicines:", error);
       } finally {
@@ -37,45 +37,56 @@ export default function Home() {
 
     const debounceTimer = setTimeout(fetchMedicines, 500);
 
-    return () => clearTimeout(debounceTimer); // Cleanup on unmount
+    return () => clearTimeout(debounceTimer); 
   }, [query]);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Welcome to Medi Finder</h1>
+    <div className="p-6 max-w-7xl mx-auto bg-white shadow-lg rounded-2xl">
+      
+      <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+        Welcome to <span className="text-blue-600">Medi Finder</span>
+      </h1>
+
       <button
-        onClick={navigateToDashboard} // Trigger the navigation when the button is clicked
-        className="bg-blue-600 text-white py-2 px-4 rounded"
+        onClick={navigateToDashboard}
+        className="w-full py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md hover:opacity-90 transition"
       >
         Go to Dashboard
       </button>
-    
-      <h1 className="text-2xl font-bold mb-4">Search for Medicines</h1>
-      <input
-        type="text"
-        className="border p-2 w-full"
-        placeholder="Enter medicine name..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      {loading && <p>Loading...</p>}
-      <ul>
-        {medicines.map((med) => (
-          <li key={med.id} className="border p-2 mt-2">
-            <p>{med.name} - {med.brand}</p>
-            <p>Available at: {med.pharmacy} ({med.address})</p>
-            {/* <p>Available at: {med?.pharmacy?.name} ({med?.pharmacy?.address})</p> */}
-            {med?.phone && (
-  <a
-    href={`https://wa.me/${med.phone}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-blue-600"
-  >
-    {med.phone}<br></br>Chat on WhatsApp
-  </a>
-)}
 
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold text-gray-700 mb-3">Search for Medicines</h2>
+        <input
+          type="text"
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-800 transition"
+          placeholder="Enter medicine name..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+
+      {loading && <p className="text-gray-600 mt-4 text-center">⏳ Searching...</p>}
+
+      <ul className="mt-6 space-y-4">
+        {medicines.map((med) => (
+          <li key={med.id} className="p-4 border rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition">
+            <p className="text-lg font-semibold text-gray-800">
+             {med.name} <span className="text-gray-600">({med.brand})</span>
+            </p>
+            <p className="text-gray-700">
+              Available at: <span className="font-medium">{med.pharmacy}</span> ({med.address})
+            </p>
+
+            {med?.phone && (
+              <a
+                href={`https://wa.me/${med.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-white bg-green-500 px-4 py-2 rounded-lg shadow hover:bg-green-600 transition"
+              >
+                Chat on WhatsApp
+              </a>
+            )}
           </li>
         ))}
       </ul>
