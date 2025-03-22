@@ -15,6 +15,12 @@ const Dashboard = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const refreshMedicines = () => {
+    if (selectedPharmacy) {
+      fetchMedicines(selectedPharmacy);
+    }
+  };
+
   useEffect(() => {
     console.log("token" , token);
     if (status === "unauthenticated") {
@@ -93,6 +99,7 @@ const Dashboard = () => {
           <UploadCSV 
             token={session?.accessToken}
             pharmacyId={selectedPharmacy}
+            onUploadSuccess={refreshMedicines} 
           />
         )}
         

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function UploadCSV({ token, pharmacyId }) {
+export default function UploadCSV({ token, pharmacyId,onUploadSuccess }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,8 +48,11 @@ export default function UploadCSV({ token, pharmacyId }) {
       if (response.data.message) {
         alert(response.data.message);
         setFile(null);
+        if (onUploadSuccess) {
+          onUploadSuccess();
+        }
       }
-    } catch (err) {
+    }  catch (err) {
       console.error('Upload error:', err);
       setError(err.response?.data?.detail || "Failed to upload file");
     } finally {
