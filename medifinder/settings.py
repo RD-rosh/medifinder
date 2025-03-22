@@ -45,6 +45,7 @@ INSTALLED_APPS = [
      "rest_framework",
     "pharmacy",
     "corsheaders",
+    'rest_framework.authtoken',
 ]
 """ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -52,7 +53,9 @@ INSTALLED_APPS = [
 ]
  """
 CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOW_CREDENTIALS = True 
+SESSION_COOKIE_SAMESITE = "None"  
+SESSION_COOKIE_SECURE = True     
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -64,6 +67,14 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+  
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',  
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 ROOT_URLCONF = "medifinder.urls"
 

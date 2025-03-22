@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,15 +9,25 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Medicine, Pharmacy
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q 
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
 
 @csrf_exempt
 def login_view(request):
+    print("Request method:", request.method)
     if request.method == "POST":
         data = json.loads(request.body)
+        print("Request body:", data)
         user = authenticate( username = data["username"], password = data["password"])
         if user:
+            token, _ = Token.objects.get_or_create(user=user)
             login(request, user)
-            return JsonResponse({"message": "Logged in successfully!"})
+            print("token", token.key)
+            return JsonResponse({"accessToken": token.key, "user": {"id": user.id, "username": user.username}})
+    
         else:
             return JsonResponse({"error": "Invalid credentials"}, status=401)
     return JsonResponse({"error": "Invalid method"}, status=405)
@@ -45,6 +56,14 @@ def csv_upload(request):
         return JsonResponse({"message": "Stock updated successfully!"})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
+@csrf_exempt
+def get_pharmacy_medicines(request, pharmacy_id):
+    if request.method == "GET":
+        medicines = Medicine.objects.filter(pharmacy_id=pharmacy_id).values()
+        return JsonResponse(list(medicines), safe=False)
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
 def search_medicine(request):
     query = request.GET.get("search", "").strip()
 
@@ -68,3 +87,48 @@ def search_medicine(request):
             "whatsapp_link": f"https://wa.me/{med.pharmacy.phone}"
         })
     return JsonResponse({"results": results})
+
+@csrf_exempt
+def signup_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            username = data["username"]
+            password = data["password"]
+            email = data.get("email", "")
+
+            # Create user
+            user = User.objects.create_user(username=username, email=email, password=password)
+
+            # If a pharmacy name is provided, create the pharmacy
+            if "pharmacy_name" in data:
+                Pharmacy.objects.create(
+                    user=user,
+                    name=data["pharmacy_name"],
+                    address=data.get("address", ""),
+                    phone=data.get("phone", ""),
+                    online_delivery=data.get("online_delivery", False),
+                )
+
+            return JsonResponse({"message": "User registered successfully!"})
+        
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+#@csrf_exempt
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_pharmacies(request):
+    if request.method == "GET":
+        user = request.user
+        print(f"✅ Debug: Authenticated user - {user}")  # 🔹 Backend Debug
+        if not user.is_authenticated:
+            return JsonResponse({"error": "User not authenticated"}, status=401)
+
+        pharmacies = Pharmacy.objects.filter(user=user).values("id", "name")
+        return JsonResponse(list(pharmacies), safe=False)
+
+    return JsonResponse({"error": "Invalid method"}, status=405)

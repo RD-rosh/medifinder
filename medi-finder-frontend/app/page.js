@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter(); 
 
   const navigateToDashboard = () => {
-    router.push("/dashboard"); 
+    router.push("dashboard"); 
     };
 
   useEffect(() => {

@@ -42,5 +42,5 @@ urlpatterns = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("pharmacy/", include("pharmacy.urls")),
-]
+]api/search/?search=${query}
  """
