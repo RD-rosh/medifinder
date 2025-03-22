@@ -37,24 +37,36 @@ def logout_view(request):
     logout(request)
     return JsonResponse({"message": "Logged out successfully!"})
 
-@login_required
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def csv_upload(request):
-    if request.method == "POST" and request.FILES.get("file"):
-        pharmacy = Pharmacy.objects.get(user=request.user)
-        df = pd.read_csv(request.FILES["file"])
+    print("Request received:", request.method)
+    print("User:", request.user)
+    print("Files:", request.FILES)
 
-        for _, row in df.iterrows():
-            Medicine.objects.update_or_create(
-                pharmacy = pharmacy,
-                name = row["Medicine Name"],
-                defaults={
-                    "brand" : row[Brand],
-                    "active_ingredient" : row["Active Ingredient"],
-                    "quantity" : row["Quantity"],   
-                }
-            )
-        return JsonResponse({"message": "Stock updated successfully!"})
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    if request.FILES.get("file"):
+        try:
+            pharmacy = Pharmacy.objects.get(user=request.user)
+            df = pd.read_csv(request.FILES["file"])
+            
+            for _, row in df.iterrows():
+                Medicine.objects.update_or_create(
+                    pharmacy=pharmacy,
+                    name=row["Medicine Name"],
+                    defaults={
+                        "brand": row["Brand"],
+                        "active_ingredient": row["Active Ingredient"],
+                        "quantity": row["Quantity"],
+                    }
+                )
+            return JsonResponse({"message": "Stock updated successfully!"})
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return JsonResponse({"error": str(e)}, status=400)
+    
+    return JsonResponse({"error": "No file provided"}, status=400)
 
 @csrf_exempt
 def get_pharmacy_medicines(request, pharmacy_id):

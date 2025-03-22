@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import UploadCSV from "@/components/uploadCSV";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -88,6 +89,13 @@ const Dashboard = () => {
         ))}
       </select>
 
+      {selectedPharmacy && (
+          <UploadCSV 
+            token={session?.accessToken}
+            pharmacyId={selectedPharmacy}
+          />
+        )}
+        
       {selectedPharmacy && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold text-gray-700 mb-3">Medicine List</h2>
