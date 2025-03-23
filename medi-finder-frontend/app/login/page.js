@@ -19,6 +19,25 @@ export default function Login() {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout/`,
+        {},
+        {
+          headers: {
+            Authorization: `Token ${session?.accessToken}`,
+          },
+        }
+      );
+     
+      localStorage.removeItem("token");
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div>
       <div className="min-h-screen pt-16"
@@ -42,12 +61,21 @@ export default function Login() {
               >
                 Dashboard
               </Link>
+              {status === "authenticated" ? (
+              <button
+                onClick={handleLogout}
+                className="hover:text-white transition-colors duration-200"
+              >
+                Logout
+              </button>
+            ) : (
               <Link
                 href="/login"
                 className="hover:text-white transition-colors duration-200"
               >
                 Login
               </Link>
+            )}
             </div>
           </div>
         </nav>

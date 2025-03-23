@@ -22,6 +22,25 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout/`,
+        {},
+        {
+          headers: {
+            Authorization: `Token ${session?.accessToken}`,
+          },
+        }
+      );
+     
+      localStorage.removeItem("token");
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   useEffect(() => {
     console.log("token" , token);
     if (status === "unauthenticated") {
@@ -86,12 +105,21 @@ const Dashboard = () => {
             >
               Dashboard
             </Link>
-            <Link
-              href="/login"
-              className="hover:text-white transition-colors duration-200"
-            >
-              Login
-            </Link>
+            {status === "authenticated" ? (
+              <button
+                onClick={handleLogout}
+                className="hover:text-white transition-colors duration-200"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="hover:text-white transition-colors duration-200"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -105,7 +133,7 @@ const Dashboard = () => {
         }}
       >
     
-    <div className="p-6 max-w-7xl mx-auto bg-white/50 backdrop-blur-sm shadow-lg rounded-2xl mt-8">
+    <div className="p-6 max-w-7xl mx-auto bg-white/65 backdrop-blur-sm shadow-lg rounded-2xl mt-8">
       <h1 className="text-3xl font-extrabold text-gray-700 text-center mb-6">
         Pharmacy <span className="text-emerald-900">Dashboard</span>
       </h1>
