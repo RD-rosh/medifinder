@@ -141,3 +141,36 @@ def get_user_pharmacies(request):
         return JsonResponse(list(pharmacies), safe=False)
 
     return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_pharmacy(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            
+            pharmacy = Pharmacy.objects.create(
+                user=request.user,
+                name=data["pharmacy_name"],
+                address=data.get("address", ""),
+                phone=data.get("phone", ""),
+                online_delivery=data.get("online_delivery", False)
+            )
+            
+            return JsonResponse({
+                "message": "Pharmacy added successfully!",
+                "pharmacy": {
+                    "id": pharmacy.id,
+                    "name": pharmacy.name
+                }
+            })
+            
+        except KeyError as e:
+            return JsonResponse({"error": f"Missing required field: {str(e)}"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
