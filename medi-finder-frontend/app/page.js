@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation"
+import Link from "next/link";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -41,29 +42,52 @@ export default function Home() {
   }, [query]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-white shadow-lg rounded-2xl">
-      
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
-        Welcome to <span className="text-blue-600">Medi Finder</span>
-      </h1>
+    <div className="min-h-screen relative">
+    <nav className="w-full w-full bg-emerald-900 backdrop-blur-sm fixed top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-white">
+            MediFinder
+          </Link>
+          <div className="flex gap-8 text-gray-300">
+            <Link
+              href="/dashboard"
+              className="hover:text-white transition-colors duration-200"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/login"
+              className="hover:text-white transition-colors duration-200"
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-      <button
-        onClick={navigateToDashboard}
-        className="w-full py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md hover:opacity-90 transition"
+    
+      <div className="min-h-screen pt-16"
+        style={{ 
+          backgroundImage: "url('https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
       >
-        Go to Dashboard
-      </button>
+        <div className="p-6 max-w-7xl mx-auto bg-white/50 backdrop-blur-sm shadow-lg rounded-2xl mt-8">
+          <h1 className="text-3xl font-extrabold text-gray-600 mb-6 text-center">
+            Welcome to <span className="text-emerald-900">MediFinder</span>
+          </h1>
 
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold text-gray-700 mb-3">Search for Medicines</h2>
-        <input
-          type="text"
-          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-800 transition"
-          placeholder="Enter medicine name..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </div>
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-700 mb-3">Search for Medicines</h2>
+            <input
+              type="text"
+              className="w-full p-3 text-gray-800 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-800 transition"
+              placeholder="Enter medicine name..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
 
       {loading && <p className="text-gray-600 mt-4 text-center">⏳ Searching...</p>}
 
@@ -91,5 +115,7 @@ export default function Home() {
         ))}
       </ul>
     </div>
+ </div>
+</div>
   );
 }

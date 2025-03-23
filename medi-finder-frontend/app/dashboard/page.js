@@ -72,6 +72,7 @@ const Dashboard = () => {
   if (status === "unauthenticated") return null;
 
   return (
+    
     <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-2xl p-6">
       <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-6">
         Pharmacy <span className="text-blue-600">Dashboard</span>
@@ -126,6 +127,7 @@ const Dashboard = () => {
         </div>
       )}
     </div>
+    
   );
 };
 
