@@ -62,7 +62,7 @@ export default function UploadCSV({ token, pharmacyId,onUploadSuccess }) {
 
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">Update Stock via CSV</h3>
+      <h3 className="text-lg text-gray-700 font-semibold mb-4">Update Stock via CSV</h3>
       <div className="flex flex-col gap-4">
         <input 
           type="file" 

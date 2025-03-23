@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import UploadCSV from "@/components/uploadCSV";
+import Link from "next/link";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -72,10 +73,41 @@ const Dashboard = () => {
   if (status === "unauthenticated") return null;
 
   return (
+    <div className="min-h-screen relative">
+    <nav className="w-full w-full bg-emerald-900 backdrop-blur-sm fixed top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-white">
+            MediFinder
+          </Link>
+          <div className="flex gap-8 text-gray-300">
+            <Link
+              href="/dashboard"
+              className="hover:text-white transition-colors duration-200"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/login"
+              className="hover:text-white transition-colors duration-200"
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+      </nav>
+
     
-    <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-2xl p-6">
-      <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-6">
-        Pharmacy <span className="text-blue-600">Dashboard</span>
+      <div className="min-h-screen pt-16"
+        style={{ 
+          backgroundImage: "url('https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+    
+    <div className="p-6 max-w-7xl mx-auto bg-white/50 backdrop-blur-sm shadow-lg rounded-2xl mt-8">
+      <h1 className="text-3xl font-extrabold text-gray-700 text-center mb-6">
+        Pharmacy <span className="text-emerald-900">Dashboard</span>
       </h1>
 
       <h2 className="text-lg font-semibold text-gray-700 mb-2">Select a Pharmacy</h2>
@@ -127,7 +159,8 @@ const Dashboard = () => {
         </div>
       )}
     </div>
-    
+      </div>
+    </div>
   );
 };
 
